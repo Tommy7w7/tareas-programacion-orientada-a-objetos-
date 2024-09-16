@@ -1,0 +1,95 @@
+# Clase para representar un Libro
+class Libro:
+    def __init__(self, titulo, autor, isbn, año):
+        self.info = (titulo, autor, isbn, año)  # Usamos una tupla para hacer inmutables estos atributos
+        self.disponible = True  # Estado de disponibilidad
+
+    def __str__(self):
+        return f"Titulo: {self.info[0]}, Autor: {self.info[1]}, ISBN: {self.info[2]}, Año: {self.info[3]}, Disponible: {self.disponible}"
+
+# Clase para representar un Usuario
+class Usuario:
+    def __init__(self, id_usuario, nombre):
+        self.id_usuario = id_usuario  # ID único del usuario
+        self.nombre = nombre
+        self.libros_prestados = []  # Lista para gestionar libros prestados
+
+    def prestar_libro(self, libro):
+        if libro.disponible:
+            self.libros_prestados.append(libro)
+            libro.disponible = False
+            print(f"Libro '{libro.info[0]}' prestado a {self.nombre}.")
+        else:
+            print(f"El libro '{libro.info[0]}' no está disponible.")
+
+    def devolver_libro(self, libro):
+        if libro in self.libros_prestados:
+            self.libros_prestados.remove(libro)
+            libro.disponible = True
+            print(f"Libro '{libro.info[0]}' devuelto por {self.nombre}.")
+        else:
+            print(f"El usuario {self.nombre} no tiene el libro '{libro.info[0]}'.")
+
+# Clase para gestionar la Biblioteca
+class Biblioteca:
+    def __init__(self):
+        self.libros = {}  # Diccionario para almacenar libros por ISBN
+        self.usuarios = set()  # Conjunto para gestionar usuarios únicos por ID
+
+    def registrar_usuario(self, id_usuario, nombre):
+        if id_usuario not in self.usuarios:
+            usuario = Usuario(id_usuario, nombre)
+            self.usuarios.add(id_usuario)
+            print(f"Usuario '{nombre}' registrado con ID: {id_usuario}.")
+            return usuario
+        else:
+            print(f"El usuario con ID {id_usuario} ya está registrado.")
+            return None
+
+    def añadir_libro(self, titulo, autor, isbn, año):
+        if isbn not in self.libros:
+            libro = Libro(titulo, autor, isbn, año)
+            self.libros[isbn] = libro
+            print(f"Libro '{titulo}' añadido a la biblioteca.")
+        else:
+            print(f"El libro con ISBN {isbn} ya está en la biblioteca.")
+
+    def prestar_libro(self, usuario, isbn):
+        if isbn in self.libros:
+            libro = self.libros[isbn]
+            usuario.prestar_libro(libro)
+        else:
+            print(f"El libro con ISBN {isbn} no existe en la biblioteca.")
+
+    def devolver_libro(self, usuario, isbn):
+        if isbn in self.libros:
+            libro = self.libros[isbn]
+            usuario.devolver_libro(libro)
+        else:
+            print(f"El libro con ISBN {isbn} no existe en la biblioteca.")
+
+    def buscar_libro(self, isbn):
+        if isbn in self.libros:
+            return str(self.libros[isbn])
+        else:
+            return f"No se encontró un libro con ISBN {isbn}."
+
+# Ejemplo de uso:
+biblioteca = Biblioteca()
+
+# Registrar usuarios
+usuario1 = biblioteca.registrar_usuario(1, "Juan Pérez")
+usuario2 = biblioteca.registrar_usuario(2, "Ana García")
+
+# Añadir libros a la biblioteca
+biblioteca.añadir_libro("Cien Años de Soledad", "Gabriel García Márquez", "123456789", 1967)
+biblioteca.añadir_libro("Don Quijote", "Miguel de Cervantes", "987654321", 1605)
+
+# Prestar y devolver libros
+biblioteca.prestar_libro(usuario1, "123456789")  # Prestamos "Cien Años de Soledad" a Juan
+biblioteca.devolver_libro(usuario1, "123456789")  # Juan devuelve el libro
+biblioteca.prestar_libro(usuario2, "987654321")  # Prestamos "Don Quijote" a Ana
+
+# Buscar libros
+print(biblioteca.buscar_libro("123456789"))
+print(biblioteca.buscar_libro("000000000"))  # ISBN inexistente
