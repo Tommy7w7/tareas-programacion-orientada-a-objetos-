@@ -1,0 +1,39 @@
+# Crear la ventana principal
+root = tk.Tk()
+root.title("Aplicación de Información")  # Título de la ventana
+
+# Función para agregar información
+def agregar_info():
+    info = entry.get()  # Obtener el texto del campo de entrada
+    if info:
+        listbox.insert(tk.END, info)  # Agregar el texto a la lista
+        entry.delete(0, tk.END)  # Limpiar el campo de texto
+    else:
+        messagebox.showwarning("Advertencia", "El campo de texto está vacío")  # Mensaje de advertencia si el campo está vacío
+
+# Función para limpiar la lista
+def limpiar_lista():
+    listbox.delete(0, tk.END)  # Borrar todos los elementos de la lista
+
+# Etiqueta
+label = tk.Label(root, text="Ingrese información:")
+label.pack(pady=5)  # Etiqueta con un espacio vertical de 5 píxeles
+
+# Campo de texto
+entry = tk.Entry(root, width=40)
+entry.pack(pady=5)  # Campo de texto con un espacio vertical de 5 píxeles
+
+# Botón "Agregar"
+agregar_button = tk.Button(root, text="Agregar", command=agregar_info)
+agregar_button.pack(pady=5)  # Botón "Agregar" con un espacio vertical de 5 píxeles
+
+# Lista para mostrar datos
+listbox = tk.Listbox(root, width=50, height=10)
+listbox.pack(pady=5)  # Lista con un espacio vertical de 5 píxeles
+
+# Botón "Limpiar"
+limpiar_button = tk.Button(root, text="Limpiar", command=limpiar_lista)
+limpiar_button.pack(pady=5)  # Botón "Limpiar" con un espacio vertical de 5 píxeles
+
+# Ejecutar la aplicación
+root.mainloop()
